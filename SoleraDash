@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Solera — Dashboard</title>
+  <style>
+    :root{ --accent:#333; --cta:#111; --muted:#e9edf2; }
+    * { box-sizing: border-box; }
+    html,body{height:100%;margin:0;font-family:"Inter","Helvetica Neue",Arial,sans-serif;background:#fafafa;color:#111}
+
+    /* ======= SPA simple ======= */
+    .screen{ display:none; min-height:100vh; }
+    .screen.active{ display:block; }
+
+    /* ======= Portada ======= */
+    .hero{
+      height:100vh;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.0) 0%, rgba(255,255,255,0.85) 65%),
+        radial-gradient(80% 60% at 50% 30%, #e8ebef 0%, #f7f8fa 60%, #ffffff 100%);
+      display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:20px;padding-top:28px;position:relative;
+    }
+    header{text-align:center;margin-top:6px}
+    h1{font-size:72px;line-height:0.95;margin:0;letter-spacing:1px;color:var(--accent);font-weight:800;text-transform:uppercase}
+    h2{font-size:56px;margin:0;color:var(--accent);font-weight:800;text-transform:uppercase}
+    .watermark{position:absolute;top:34%;left:50%;transform:translateX(-50%);font-size:220px;font-weight:900;color:rgba(0,0,0,0.06);pointer-events:none;user-select:none;letter-spacing:6px}
+    .car-wrap{width:520px;max-width:80%;margin-top:38px;filter:drop-shadow(0 20px 40px rgba(0,0,0,0.12));display:flex;align-items:center;justify-content:center}
+    .car{width:100%;max-width:520px;}
+    .cta{margin-top:22px;display:flex;gap:12px;align-items:center;justify-content:center}
+    .btn{background:var(--cta);color:#fff;padding:14px 26px;border-radius:10px;text-decoration:none;font-weight:700;letter-spacing:.6px;box-shadow:0 8px 18px rgba(17,17,17,.12);cursor:pointer;border:none}
+    .btn.secondary{background:transparent;color:var(--accent);border:2px solid rgba(0,0,0,0.06);padding:12px 22px;border-radius:10px}
+    footer{position:absolute;bottom:22px;width:100%;text-align:center;color:#777;font-size:13px}
+    @media (max-width:640px){h1{font-size:40px}h2{font-size:34px}.watermark{font-size:120px;top:30%}.car-wrap{width:86%}}
+
+    /* ======= Login ======= */
+    .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:#f4f6f8;}
+    .card{width:100%;max-width:420px;background:#fff;padding:28px;border-radius:14px;box-shadow:0 20px 50px rgba(10,20,30,0.08);border:1px solid rgba(0,0,0,0.04);}
+    .card h3{margin:0 0 12px 0;font-size:20px}
+    .card p.sub{margin:0 0 20px 0;color:#666;font-size:14px}
+    label{display:block;font-size:13px;color:#333;margin-bottom:6px}
+    input[type="text"],input[type="password"]{width:100%;padding:12px 14px;border-radius:8px;border:1px solid #e6e9ee;font-size:14px;box-sizing:border-box;margin-bottom:14px}
+    .error{color:#b00020;font-size:13px;margin-top:6px;display:none}
+    .toplink{position:absolute;left:16px;top:16px}
+
+    /* ======= Dashboard: look Apple-ish claro ======= */
+    body{background:linear-gradient(180deg,#f7f8fb 0%,#f3f5f8 100%)}
+    .nav{position:sticky;top:0;z-index:10;background:#ffffff;color:#111;padding:14px 20px;display:flex;gap:12px;align-items:center;border-bottom:1px solid #eceff3;box-shadow:0 6px 20px rgba(17,17,26,0.05)}
+    .nav .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.2px}
+    .nav .spacer{flex:1}
+    .nav a{color:#111;text-decoration:none;background:linear-gradient(180deg,#ffffff,#f6f7fb);padding:8px 12px;border-radius:10px;border:1px solid #e6eaf0;box-shadow:0 2px 6px rgba(17,17,26,0.06)}
+    .container{max-width:1280px;margin:0 auto;padding:32px}
+    .card2{background:#fff;border:1px solid #eceff3;border-radius:16px;box-shadow:0 10px 30px rgba(2,6,23,0.06)}
+    .card-pad{padding:18px}
+    .grid-12{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px}
+    .col-3{grid-column:span 3}.col-4{grid-column:span 4}.col-5{grid-column:span 5}
+    .col-6{grid-column:span 6}.col-7{grid-column:span 7}.col-8{grid-column:span 8}.col-12{grid-column:span 12}
+    @media(max-width:900px){.col-3,.col-4,.col-5,.col-6,.col-7,.col-8{grid-column:span 12}}
+    .kpi{display:flex;flex-direction:column;gap:8px}
+    .kpi .title{font-size:13px;color:#6b7280;text-transform:uppercase;letter-spacing:.6px}
+    .kpi .value{font-size:38px;font-weight:800;letter-spacing:.3px}
+    .viz{min-height:280px;border-radius:16px;border:1px solid #eceff3;background:#ffffff;box-shadow:inset 0 1px 0 rgba(255,255,255,0.6),0 6px 20px rgba(17,17,26,0.04)}
+    .badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:6px 10px;border-radius:999px;background:linear-gradient(180deg,#eef2ff,#e9ecff);border:1px solid #dfe5ff;color:#3f4ad1}
+    .muted{color:#6b7280;font-size:13px}
+  </style>
+</head>
+<body>
+  <!-- ======= Pantalla 1: Portada ======= -->
+  <section id="screen-cover" class="screen active">
+    <div class="hero">
+      <div class="watermark">SOLERA</div>
+      <header>
+        <h1>Dashboard</h1>
+        <h2>KPI's</h2>
+      </header>
+      <div class="car-wrap">
+        <!-- Puedes cambiar por tu imagen base64 o url -->
+        <img class="car" src="https://dummyimage.com/960x540/efefef/111.png&text=Tu+Portada" alt="Portada"/>
+      </div>
+      <div class="cta">
+        <button class="btn" onclick="go('login')">Ingresar</button>
+      </div>
+      <footer>Demo visual. Sustituye portada/logo según tu marca.</footer>
+    </div>
+  </section>
+
+  <!-- ======= Pantalla 2: Login ======= -->
+  <section id="screen-login" class="screen">
+    <div class="wrap">
+      <div class="card">
+        <a class="toplink" href="#" onclick="go('cover')">← Volver</a>
+        <h3>Acceso al dashboard</h3>
+        <p class="sub">Introduce tu usuario y contraseña para continuar.</p>
+        <form onsubmit="return doLogin(event)">
+          <label for="user">Usuario</label>
+          <input id="user" type="text" placeholder="nombre de usuario" required />
+          <label for="pass">Contraseña</label>
+          <input id="pass" type="password" placeholder="contraseña" required />
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">
+            <button class="btn" type="submit">Entrar</button>
+            <a class="btn secondary" href="#" onclick="alert('Contacta al admin.');return false;">¿Olvidaste la contraseña?</a>
+          </div>
+          <div id="err" class="error">Usuario o contraseña incorrectos.</div>
+        </form>
+        <div style="font-size:13px;color:#999;margin-top:12px">Demo: usuario <b>admin</b> / contraseña <b>1234</b>.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= Pantalla 3: Dashboard ======= -->
+  <section id="screen-dashboard" class="screen">
+    <nav class="nav">
+      <div class="brand">SOLERA — Dashboard</div>
+      <div class="spacer"></div>
+      <a href="#" onclick="logout();return false;">Cerrar sesión</a>
+    </nav>
+
+    <div class="container">
+      <!-- Nivel 1: KPIs principales (4 tarjetas) -->
+      <div class="grid-12">
+        <div class="card2 card-pad col-3 kpi">
+          <div class="title">Estado con mayor No. de Valuaciones</div>
+          <div class="value" id="kpi_estado_val">—</div>
+        </div>
+        <div class="card2 card-pad col-3 kpi">
+          <div class="title">Fabricante con mayor No. de Valuaciones</div>
+          <div class="value" id="kpi_fab_val">—</div>
+        </div>
+        <div class="card2 card-pad col-3 kpi">
+          <div class="title">Estado con mayor Piezas Sustituidas</div>
+          <div class="value" id="kpi_estado_pzs">—</div>
+        </div>
+        <div class="card2 card-pad col-3 kpi">
+          <div class="title">Fabricante con mayor Piezas Sustituidas</div>
+          <div class="value" id="kpi_fab_pzs">—</div>
+        </div>
+      </div>
+
+      <!-- Nivel 2: Mapa izquierda + columna derecha -->
+      <div class="grid-12" style="margin-top:16px">
+        <!-- IZQUIERDA: Mapa (7/12) -->
+        <div class="card2 col-7">
+          <div class="card-pad">
+            <div class="title" style="margin-bottom:8px">Detalle High Level por Estado</div>
+          </div>
+          <div class="viz" id="viz-mapa" style="height:420px; padding:0; overflow:hidden">
+            <!-- Coloca mx_map.html junto a este archivo .html -->
+            <iframe id="mx_iframe" src="mx_map.html"
+              style="width:100%;height:100%;border:0;border-radius:16px;overflow:hidden"
+              loading="lazy" referrerpolicy="no-referrer"></iframe>
+          </div>
+        </div>
+
+        <!-- DERECHA: KPIs/Lists/Gráficas (5/12) -->
+        <div class="col-5" style="display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px">
+          <div class="card2 card-pad col-12">
+            <div class="title" style="margin-bottom:8px">Top Fabricantes con más Piezas Sustituidas</div>
+            <div class="list" id="list_fabricantes">
+              <!-- Se puede reemplazar por Plotly más adelante -->
+              <div class="muted">Cárgalo desde tu Sheet o con una figura.</div>
+            </div>
+          </div>
+
+          <div class="card2 card-pad col-12">
+            <div class="title" style="margin-bottom:8px">Modelos con más No Valuaciones</div>
+            <div class="list" id="list_modelos">
+              <div class="muted">Placeholder por ahora.</div>
+            </div>
+          </div>
+
+          <div class="card2 card-pad col-12">
+            <div class="title" style="margin-bottom:8px">NPS y Feedback</div>
+            <div class="viz" style="height:120px;display:flex;align-items:center;justify-content:center">Gauge aquí</div>
+            <div class="list" style="margin-top:10px">
+              <div class="row">OK <span class="muted">— 14 días</span></div>
+              <div class="row">Muy útil <span class="muted">— 2 meses</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="muted" style="margin-top:18px">🟢 Solera — dashboard demo</div>
+    </div>
+  </section>
+
+  <!-- CSV parser para Google Sheets publicado -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+  <script>
+    // --------- Config: tu Google Sheet publicado ---------
+    const SHEET_URL_HTML = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTY8caVTcwnisoepB9R_rBQ2DAKlmxpTfA3WYqgaZQF2I2J2abE68cyJWvyd9Byu8QOP-N0nwOHWQ2K/pubhtml";
+    const SHEET_URL_CSV  = SHEET_URL_HTML.replace("/pubhtml","/pub?output=csv");
+
+    // --------- SPA navegación ---------
+    function go(where){
+      const ids = ['cover','login','dashboard'];
+      ids.forEach(id=>document.getElementById('screen-'+id).classList.remove('active'));
+      document.getElementById('screen-'+where).classList.add('active');
+      window.scrollTo({top:0, behavior:'instant'});
+    }
+    function doLogin(e){
+      e.preventDefault();
+      const u = document.getElementById('user').value.trim();
+      const p = document.getElementById('pass').value.trim();
+      const err = document.getElementById('err');
+      if(u==='admin' && p==='1234'){ go('dashboard'); }
+      else{ err.style.display='block'; setTimeout(()=> err.style.display='none', 3000); }
+      return false;
+    }
+    function logout(){ go('cover'); document.getElementById('user').value=''; document.getElementById('pass').value=''; }
+
+    // --------- Util: parseo numérico coma/punto ---------
+    function parseNumLocale(x){
+      if(x===null||x===undefined) return null;
+      let s = String(x).trim().replace(/\s+/g,'').replace(/\$/g,'');
+      if(s.includes(',') && s.includes('.')){
+        if(s.lastIndexOf(',') > s.lastIndexOf('.')){ s = s.replace(/\./g,'').replace(',', '.'); }
+        else { s = s.replace(/,/g,''); }
+      } else if(s.includes(',') && !s.includes('.')){
+        s = s.replace(/\./g,'').replace(',', '.');
+      }
+      const v = Number(s); return Number.isFinite(v) ? v : null;
+    }
+
+    // --------- Carga y KPIs en cliente ---------
+    async function loadKPIs(){
+      return new Promise((resolve,reject)=>{
+        Papa.parse(SHEET_URL_CSV, {
+          download:true, header:true, dynamicTyping:false, skipEmptyLines:true,
+          complete: (res)=>{
+            try{
+              const rows = res.data.filter(r=>r && r.Estado && r.Fabricante);
+              for(const r of rows){
+                r["No Valuaciones"]     = parseNumLocale(r["No Valuaciones"]);
+                r["Piezas Sustituidas"] = parseNumLocale(r["Piezas Sustituidas"]);
+                r["Costo Medio Pieza"]  = parseNumLocale(r["Costo Medio Pieza"]);
+              }
+              const aggEstado = new Map(), aggFab = new Map();
+              for(const r of rows){
+                const e = String(r.Estado||'').trim();
+                const f = String(r.Fabricante||'').trim();
+                const nv = r["No Valuaciones"]||0, pz = r["Piezas Sustituidas"]||0;
+                if(!aggEstado.has(e)) aggEstado.set(e,{Estado:e, No_Valuaciones:0, Piezas_Sustituidas:0});
+                if(!aggFab.has(f))    aggFab.set(f,   {Fabricante:f, No_Valuaciones:0, Piezas_Sustituidas:0});
+                aggEstado.get(e).No_Valuaciones     += nv; aggEstado.get(e).Piezas_Sustituidas     += pz;
+                aggFab.get(f).No_Valuaciones        += nv; aggFab.get(f).Piezas_Sustituidas        += pz;
+              }
+              const estRows = Array.from(aggEstado.values());
+              const fabRows = Array.from(aggFab.values());
+              const topEV = estRows.reduce((a,b)=> (b.No_Valuaciones     > (a?.No_Valuaciones||-Infinity)     ? b:a), null);
+              const topEP = estRows.reduce((a,b)=> (b.Piezas_Sustituidas > (a?.Piezas_Sustituidas||-Infinity) ? b:a), null);
+              const topFV = fabRows.reduce((a,b)=> (b.No_Valuaciones     > (a?.No_Valuaciones||-Infinity)     ? b:a), null);
+              const topFP = fabRows.reduce((a,b)=> (b.Piezas_Sustituidas > (a?.Piezas_Sustituidas||-Infinity) ? b:a), null);
+
+              const fmtInt = (x)=> (x==null? '—' : Number(Math.round(x)).toLocaleString('es-MX'));
+              document.getElementById('kpi_estado_val').textContent = topEV ? `${topEV.Estado}  ·  ${fmtInt(topEV.No_Valuaciones)}` : '—';
+              document.getElementById('kpi_fab_val').textContent    = topFV ? `${topFV.Fabricante}  ·  ${fmtInt(topFV.No_Valuaciones)}` : '—';
+              document.getElementById('kpi_estado_pzs').textContent = topEP ? `${topEP.Estado}  ·  ${fmtInt(topEP.Piezas_Sustituidas)}` : '—';
+              document.getElementById('kpi_fab_pzs').textContent    = topFP ? `${topFP.Fabricante}  ·  ${fmtInt(topFP.Piezas_Sustituidas)}` : '—';
+
+              resolve();
+            }catch(err){ reject(err); }
+          },
+          error: reject
+        });
+      });
+    }
+
+    // --------- Auto-refresh del mapa (opcional) ---------
+    const MX_IFRAME_URL = document.getElementById('mx_iframe')?.getAttribute('src') || 'mx_map.html';
+    let mxInterval = null;
+    function refreshMxMap(){
+      const f = document.getElementById('mx_iframe'); if(!f) return;
+      f.src = MX_IFRAME_URL + (MX_IFRAME_URL.includes('?')?'&':'?') + 't=' + Date.now();
+    }
+    function startAutoRefresh(seconds=180){ stopAutoRefresh(); mxInterval = setInterval(refreshMxMap, seconds*1000); }
+    function stopAutoRefresh(){ if(mxInterval) clearInterval(mxInterval), mxInterval=null; }
+
+    // Hook en navegación para inicializar dashboard
+    const __go = window.go;
+    window.go = function(where){
+      __go(where);
+      if(where==='dashboard'){
+        loadKPIs().catch(console.error);
+        // startAutoRefresh(180); // <- descomenta si quieres refrescar el mapa cada 3 min
+      } else {
+        stopAutoRefresh();
+      }
+    }
+  </script>
+</body>
+</html>
