@@ -90,7 +90,54 @@
     .badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:6px 10px;border-radius:999px;background:linear-gradient(180deg,#eef2ff,#e9ecff);border:1px solid #dfe5ff;color:#3f4ad1}
     .muted{color:#6b7280;font-size:13px}
     .stat{padding:12px;border-radius:12px;background:linear-gradient(180deg,#fff,#f7f9fc);border:1px solid #eceff3}
-  </style>
+  
+  /* ======= Responsividad mejorada ======= */
+  @media (max-width: 1280px){
+    .container{max-width:1000px;padding:24px}
+    .kpi .value{font-size:34px}
+    #viz-mapa{min-height:380px}
+  }
+  @media (max-width: 1024px){
+    .container{max-width:900px;padding:22px}
+    .grid-12{gap:14px}
+    .kpi .value{font-size:32px}
+    h1{font-size:56px}
+    h2{font-size:40px}
+    .watermark{font-size:180px}
+  }
+  @media (max-width: 900px){
+    /* Fuerza el apilado de segunda fila */
+    .col-7,.col-5{grid-column:span 12}
+    .kpi .value{font-size:30px}
+    #viz-mapa{min-height:360px}
+    .nav{padding:12px 14px}
+    .nav a{padding:8px 10px}
+  }
+  @media (max-width: 720px){
+    .container{padding:18px}
+    .grid-12{gap:12px}
+    .card-pad{padding:16px}
+    .kpi .value{font-size:28px}
+    h1{font-size:44px}
+    h2{font-size:32px}
+    .watermark{font-size:140px}
+    .car-wrap{width:92%;margin-top:20px}
+    .btn{width:100%;text-align:center}
+  }
+  @media (max-width: 560px){
+    .container{padding:14px}
+    .kpi .value{font-size:26px}
+    h1{font-size:36px}
+    h2{font-size:28px}
+    .watermark{font-size:110px}
+    #viz-mapa{min-height:320px}
+    .card{max-width:92vw;padding:20px}
+    input[type="text"],input[type="password"]{padding:11px 12px;font-size:15px}
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{scroll-behavior:auto}
+  }
+</style>
 </head>
 <body>
   <!-- ======= Pantalla 1: Portada ======= -->
