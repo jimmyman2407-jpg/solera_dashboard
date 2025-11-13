@@ -11,18 +11,58 @@
     }
     *{box-sizing:border-box}
     html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink)}
-
-    /* ===== SPA screens ===== */
     .screen{display:none;min-height:100vh}
     .screen.active{display:block}
 
-    /* ===== Top nav (solo dashboard) ===== */
+    /* ===== Portada tipo “Meet Our 2025 Models” ===== */
+    .hero-landing{
+      min-height:100vh;
+      display:flex; align-items:center; justify-content:center;
+      background:#fff; padding:40px 24px;
+    }
+    .landing-wrap{
+      max-width:980px; width:100%;
+      display:flex; flex-direction:column; align-items:center;
+      text-align:center;
+    }
+    .landing-title{
+      font-weight:900; letter-spacing:1px;
+      line-height:1.0; margin:0 0 18px;
+      color:#2b2f33; text-transform:uppercase;
+      font-size:64px;
+    }
+    @media (max-width:900px){ .landing-title{font-size:48px} }
+    @media (max-width:600px){ .landing-title{font-size:38px} }
+
+    .landing-visual{
+      margin:18px 0 20px;
+      max-width:520px; width:100%;
+      filter: drop-shadow(0 18px 40px rgba(0,0,0,.12));
+    }
+    .landing-visual img{ width:100%; height:auto; display:block; object-fit:contain; }
+
+    .landing-cta{ display:flex; gap:16px; margin-top:10px; flex-wrap:wrap; justify-content:center; }
+    .btn-dark{
+      background:#16181b; color:#fff; border:0;
+      padding:12px 18px; border-radius:10px; cursor:pointer;
+      font-weight:700; letter-spacing:.3px;
+      box-shadow:0 10px 24px rgba(22,24,27,.18);
+    }
+    .btn-ghost{
+      background:#fff; color:#2b2f33;
+      border:1px solid #e5e8ee; padding:12px 18px;
+      border-radius:10px; cursor:pointer; font-weight:700;
+      box-shadow:0 6px 16px rgba(17,17,26,.06);
+    }
+    .btn-dark:hover,.btn-ghost:hover{ transform:translateY(-1px) }
+
+    /* ===== Nav (solo dashboard) ===== */
     .nav{position:sticky;top:0;z-index:10;background:var(--paper);border-bottom:1px solid var(--border);
       display:flex;gap:12px;align-items:center;justify-content:space-between;padding:14px 20px;
       box-shadow:0 6px 20px rgba(17,17,26,.05)}
     .nav a{color:var(--ink);text-decoration:none;border:1px solid var(--border);border-radius:10px;padding:8px 12px;background:linear-gradient(#fff,#f8f9ff)}
 
-    /* ===== Layout helpers ===== */
+    /* ===== Layout dashboard ===== */
     .container{max-width:1280px;margin:0 auto;padding:32px}
     .grid-12{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px}
     .col-3{grid-column:span 3}.col-4{grid-column:span 4}.col-5{grid-column:span 5}
@@ -36,19 +76,6 @@
     .kpi{display:flex;flex-direction:column;gap:6px}
     .kpi .value{font-size:36px;font-weight:800}
 
-    /* ===== Hero (portada v1 simple, mejor distribuida) ===== */
-    .hero{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px;background:
-      radial-gradient(110% 80% at 10% 10%, #eef2f7 0%, rgba(255,255,255,.8) 45%, #ffffff 100%),
-      linear-gradient(180deg,#ffffff 0%, #f4f6fb 100%)}
-    .hero-grid{width:100%;max-width:1200px;display:grid;grid-template-columns:1.05fr .95fr;gap:28px;align-items:center}
-    .hero-text{border-radius:18px}
-    .hero-text .eyebrow{font-size:12px;letter-spacing:.14em;color:#4b5563;margin:0 0 6px}
-    .hero-text h1{font-size:64px;line-height:.95;margin:0}
-    .hero-text h2{font-size:40px;margin:4px 0 8px 0}
-    .hero-text .sublead{color:#475569;margin:2px 0 12px 0;max-width:60ch}
-    .hero-visual{height:520px;border:1px solid var(--border);border-radius:22px;overflow:hidden;box-shadow:0 30px 70px rgba(12,20,33,.10)}
-    .hero-visual img{width:100%;height:100%;object-fit:cover;display:block}
-
     /* ===== Login ===== */
     .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
     .card{width:100%;max-width:420px;background:#fff;border:1px solid var(--border);border-radius:14px;padding:26px;box-shadow:var(--shadow)}
@@ -57,44 +84,29 @@
     .error{color:#b00020;font-size:13px;display:none;margin-top:6px}
 
     /* ===== Responsive ===== */
-    @media(max-width:1100px){
-      .hero-grid{grid-template-columns:1fr}
-      .hero-visual{order:1;height:400px}
-      .hero-text{order:2}
-      .hero-text h1{font-size:56px}
-    }
-    @media(max-width:900px){
-      .col-7,.col-5{grid-column:span 12}
-      .kpi .value{font-size:32px}
-    }
-    @media(max-width:640px){
-      .container{padding:20px}
-      .hero-visual{height:300px}
-      .hero-text h1{font-size:44px}
-      .hero-text h2{font-size:30px}
-      .kpi .value{font-size:28px}
-    }
+    @media(max-width:900px){ .col-7,.col-5{grid-column:span 12} .kpi .value{font-size:32px} }
+    @media(max-width:640px){ .container{padding:20px} .kpi .value{font-size:28px} }
   </style>
 </head>
 <body>
 
-  <!-- ===== Cover ===== -->
+  <!-- ===== Portada ===== -->
   <section id="screen-cover" class="screen active">
-    <div class="hero">
-      <div class="hero-grid">
-        <div class="hero-text card2 card-pad">
-          <p class="eyebrow">REPORTE EJECUTIVO</p>
-          <h1>Dashboard</h1>
-          <h2>KPI's</h2>
-          <p class="sublead">Visión clara de performance con datos al día. Entra para explorar el detalle por estado, fabricante y modelo.</p>
-          <div class="cta" style="display:flex;gap:10px">
-            <button class="btn" onclick="go('login')">Ingresar</button>
-            <button class="btn secondary" onclick="go('dashboard')">Ver demo</button>
-          </div>
+    <div class="hero-landing">
+      <div class="landing-wrap">
+        <h1 class="landing-title">
+          SOLERA<br>
+          DASHBOARD KPI’S
+        </h1>
+
+        <div class="landing-visual">
+          <!-- Si la imagen vive en otra carpeta, ajusta la ruta -->
+          <img src="portadasolera.png" alt="Portada Solera">
         </div>
-        <div class="hero-visual">
-          <!-- Tu imagen ya en GitHub: portadasolera.png -->
-          <img src="portadasolera.png" alt="Portada Solera"/>
+
+        <div class="landing-cta">
+          <button class="btn-dark" onclick="go('login')">Ingresar</button>
+          <button class="btn-ghost" onclick="go('dashboard')">Ver demo</button>
         </div>
       </div>
     </div>
@@ -130,7 +142,7 @@
     </nav>
 
     <div class="container">
-      <!-- Nivel 1: KPIs -->
+      <!-- KPIs -->
       <div class="grid-12">
         <div class="card2 card-pad col-3 kpi">
           <div class="title">Estado con mayor No. de Valuaciones</div>
@@ -150,29 +162,27 @@
         </div>
       </div>
 
-      <!-- Nivel 2: Mapa izquierda + panel derecho -->
+      <!-- Mapa + panel derecho -->
       <div class="grid-12" style="margin-top:16px">
-        <!-- IZQ: mapa -->
         <div class="card2 col-7">
           <div class="card-pad"><div class="title">Detalle por estado (mapa)</div></div>
-          <div class="viz" id="viz-mapa" style="height:420px;padding:0;overflow:hidden">
+          <div class="viz" style="height:420px;padding:0;overflow:hidden">
             <iframe id="mx_iframe" src="mx_map.html"
               style="width:100%;height:100%;border:0;border-radius:16px" loading="lazy" referrerpolicy="no-referrer"></iframe>
           </div>
         </div>
-        <!-- DER: placeholders para listas / gráficas adicionales -->
         <div class="col-5" style="display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px">
           <div class="card2 card-pad col-12">
             <div class="title" style="margin-bottom:8px">Top Fabricantes por Piezas Sustituidas</div>
-            <div class="muted">(Integra aquí tu lista/gráfica; queda espacio preparado)</div>
+            <div class="muted">(espacio para tu lista/gráfica)</div>
           </div>
           <div class="card2 card-pad col-12">
             <div class="title" style="margin-bottom:8px">Modelos con más Valuaciones</div>
-            <div class="muted">Placeholder</div>
+            <div class="muted">placeholder</div>
           </div>
           <div class="card2 card-pad col-12">
             <div class="title" style="margin-bottom:8px">NPS y feedback</div>
-            <div class="muted">Placeholder</div>
+            <div class="muted">placeholder</div>
           </div>
         </div>
       </div>
@@ -182,7 +192,7 @@
   <!-- ===== Scripts ===== -->
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <script>
-    // -------- SPA nav ----------
+    // ------ SPA nav ------
     function go(where){
       const ids=['cover','login','dashboard'];
       ids.forEach(id=>document.getElementById('screen-'+id).classList.remove('active'));
@@ -192,63 +202,57 @@
     }
     function doLogin(e){
       e.preventDefault();
-      const u = document.getElementById('user').value.trim();
-      const p = document.getElementById('pass').value.trim();
-      const err = document.getElementById('err');
+      const u=document.getElementById('user').value.trim();
+      const p=document.getElementById('pass').value.trim();
+      const err=document.getElementById('err');
       if(u==='admin' && p==='1234'){ go('dashboard'); }
-      else { err.style.display='block'; setTimeout(()=> err.style.display='none', 3000); }
+      else{ err.style.display='block'; setTimeout(()=>err.style.display='none',3000); }
       return false;
     }
     function logout(){ go('cover'); document.getElementById('user').value=''; document.getElementById('pass').value=''; }
 
-    // -------- KPIs (auto actualizados desde Google Sheets publicado) ----------
-    const SHEET_URL_HTML = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTY8caVTcwnisoepB9R_rBQ2DAKlmxpTfA3WYqgaZQF2I2J2abE68cyJWvyd9Byu8QOP-N0nwOHWQ2K/pubhtml";
-    const SHEET_URL_CSV  = SHEET_URL_HTML.replace("/pubhtml","/pub?output=csv");
+    // ------ KPIs desde Google Sheets ------
+    const SHEET_URL_HTML="https://docs.google.com/spreadsheets/d/e/2PACX-1vTY8caVTcwnisoepB9R_rBQ2DAKlmxpTfA3WYqgaZQF2I2J2abE68cyJWvyd9Byu8QOP-N0nwOHWQ2K/pubhtml";
+    const SHEET_URL_CSV =SHEET_URL_HTML.replace("/pubhtml","/pub?output=csv");
 
     function parseNumLocale(x){
       if(x==null) return null;
-      let s = String(x).trim().replace(/\s+/g,'').replace(/\$/g,'');
+      let s=String(x).trim().replace(/\s+/g,'').replace(/\$/g,'');
       if(s.includes(',') && s.includes('.')){
-        if(s.lastIndexOf(',') > s.lastIndexOf('.')){ s = s.replace(/\./g,'').replace(',', '.'); }
-        else { s = s.replace(/,/g,''); }
-      } else if(s.includes(',') && !s.includes('.')){
-        s = s.replace(/\./g,'').replace(',', '.');
-      }
-      const v = Number(s); return Number.isFinite(v) ? v : null;
+        if(s.lastIndexOf(',')>s.lastIndexOf('.')){ s=s.replace(/\./g,'').replace(',', '.'); }
+        else{ s=s.replace(/,/g,''); }
+      }else if(s.includes(',') && !s.includes('.')){ s=s.replace(/\./g,'').replace(',', '.'); }
+      const v=Number(s); return Number.isFinite(v)?v:null;
     }
-
     function loadKPIs(){
       return new Promise((resolve,reject)=>{
         Papa.parse(SHEET_URL_CSV,{
           download:true, header:true, dynamicTyping:false, skipEmptyLines:true,
           complete:(res)=>{
             try{
-              const rows = res.data.filter(r=>r && r.Estado && r.Fabricante);
+              const rows=res.data.filter(r=>r && r.Estado && r.Fabricante);
               rows.forEach(r=>{
-                r["No Valuaciones"]     = parseNumLocale(r["No Valuaciones"]);
-                r["Piezas Sustituidas"] = parseNumLocale(r["Piezas Sustituidas"]);
-                r["Costo Medio Pieza"]  = parseNumLocale(r["Costo Medio Pieza"]);
+                r["No Valuaciones"]=parseNumLocale(r["No Valuaciones"]);
+                r["Piezas Sustituidas"]=parseNumLocale(r["Piezas Sustituidas"]);
+                r["Costo Medio Pieza"]=parseNumLocale(r["Costo Medio Pieza"]);
               });
-
-              const aggE = new Map(), aggF = new Map();
+              const aggE=new Map(), aggF=new Map();
               for(const r of rows){
-                const e = String(r.Estado||'').trim();
-                const f = String(r.Fabricante||'').trim();
-                const nv = r["No Valuaciones"]||0, pz = r["Piezas Sustituidas"]||0;
-                if(!aggE.has(e)) aggE.set(e,{Estado:e, No_Valuaciones:0, Piezas_Sustituidas:0});
-                if(!aggF.has(f)) aggF.set(f,{Fabricante:f, No_Valuaciones:0, Piezas_Sustituidas:0});
-                aggE.get(e).No_Valuaciones += nv; aggE.get(e).Piezas_Sustituidas += pz;
-                aggF.get(f).No_Valuaciones += nv; aggF.get(f).Piezas_Sustituidas += pz;
+                const e=String(r.Estado||'').trim();
+                const f=String(r.Fabricante||'').trim();
+                const nv=r["No Valuaciones"]||0, pz=r["Piezas Sustituidas"]||0;
+                if(!aggE.has(e)) aggE.set(e,{Estado:e,No_Valuaciones:0,Piezas_Sustituidas:0});
+                if(!aggF.has(f)) aggF.set(f,{Fabricante:f,No_Valuaciones:0,Piezas_Sustituidas:0});
+                aggE.get(e).No_Valuaciones+=nv; aggE.get(e).Piezas_Sustituidas+=pz;
+                aggF.get(f).No_Valuaciones+=nv; aggF.get(f).Piezas_Sustituidas+=pz;
               }
-              const est = Array.from(aggE.values());
-              const fab = Array.from(aggF.values());
-              const top = (arr,key)=>arr.reduce((a,b)=>b[key]>(a?.[key]??-Infinity)?b:a,null);
-              const topEV = top(est,'No_Valuaciones');
-              const topEP = top(est,'Piezas_Sustituidas');
-              const topFV = top(fab,'No_Valuaciones');
-              const topFP = top(fab,'Piezas_Sustituidas');
-              const fmt = x => x==null ? '—' : Number(Math.round(x)).toLocaleString('es-MX');
-
+              const est=[...aggE.values()], fab=[...aggF.values()];
+              const top=(a,k)=>a.reduce((x,y)=>y[k]>(x?.[k]??-Infinity)?y:x,null);
+              const topEV=top(est,'No_Valuaciones'),
+                    topEP=top(est,'Piezas_Sustituidas'),
+                    topFV=top(fab,'No_Valuaciones'),
+                    topFP=top(fab,'Piezas_Sustituidas');
+              const fmt=x=>x==null?'—':Number(Math.round(x)).toLocaleString('es-MX');
               document.getElementById('kpi_estado_val').textContent = topEV ? `${topEV.Estado} · ${fmt(topEV.No_Valuaciones)}` : '—';
               document.getElementById('kpi_fab_val').textContent    = topFV ? `${topFV.Fabricante} · ${fmt(topFV.No_Valuaciones)}` : '—';
               document.getElementById('kpi_estado_pzs').textContent = topEP ? `${topEP.Estado} · ${fmt(topEP.Piezas_Sustituidas)}` : '—';
@@ -261,30 +265,28 @@
       });
     }
 
-    // -------- Auto-refresh KPIs + mapa (iframe) ----------
-    const MX_IFRAME_URL = "mx_map.html";
+    // ------ Auto-refresh KPIs + mapa ------
+    const MX_IFRAME_URL="mx_map.html";
     let kpiTimer=null, mapTimer=null;
-
     function refreshMxMap(){
-      const f = document.getElementById('mx_iframe');
+      const f=document.getElementById('mx_iframe');
       if(!f) return;
-      f.src = MX_IFRAME_URL + "?t=" + Date.now(); // rompe caché
+      f.src=MX_IFRAME_URL+"?t="+Date.now();
     }
     function startAuto(){
       stopAuto();
       loadKPIs().catch(console.error);
-      kpiTimer = setInterval(()=>loadKPIs().catch(console.error), 120*1000); // 2 min
-      mapTimer = setInterval(refreshMxMap, 180*1000); // 3 min
+      kpiTimer=setInterval(()=>loadKPIs().catch(console.error), 120*1000); // 2 min
+      mapTimer=setInterval(refreshMxMap, 180*1000); // 3 min
     }
     function stopAuto(){
       if(kpiTimer) clearInterval(kpiTimer), kpiTimer=null;
       if(mapTimer) clearInterval(mapTimer), mapTimer=null;
     }
-
-    // Si alguien abre directo el dashboard:
     document.addEventListener('DOMContentLoaded',()=>{
       if(document.getElementById('screen-dashboard').classList.contains('active')) startAuto();
     });
   </script>
 </body>
 </html>
+
