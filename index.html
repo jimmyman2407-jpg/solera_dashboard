@@ -497,4 +497,202 @@
 </script>
 
 </body>
+
+
+  <!-- ====== SOLERA · PARCHE DE ESTÉTICA (sólo GRÁFICAS y MAPA) ======
+Pega este bloque al FINAL de tu index.html para mejorar la estética
+de Plotly y Leaflet sin tocar tus KPIs ni el layout.
+================================================================= -->
+<style>
+  /* Contenedores visuales */
+  .viz{ background:#fff; border-radius:14px; box-shadow:0 10px 28px rgba(20,12,60,.08); }
+  #map{ border-radius:14px; overflow:hidden; }
+
+  /* Tooltip Leaflet oscuro corporativo */
+  .leaflet-tooltip{
+    background:#11162f !important; 
+    color:#eef0fa !important;
+    border:none !important;
+    border-radius:10px !important;
+    padding:8px 10px !important;
+    box-shadow:0 10px 28px rgba(10,8,30,.22) !important;
+  }
+
+  /* Leyenda del mapa con gradiente Solera */
+  .mx-legend{
+    position:absolute; left:16px; bottom:16px; z-index:9999;
+    background:#ffffff; border:1px solid #e8ecf3; border-radius:12px;
+    padding:10px 12px; font:13px/1.25 Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;
+    box-shadow:0 14px 38px rgba(20,12,60,.16);
+  }
+  .mx-legend .bar{
+    width:160px; height:10px; border-radius:999px; margin:6px 0 4px;
+    background:linear-gradient(90deg, rgb(60,0,130), rgb(100,20,200), rgb(156,54,255));
+  }
+  .mx-legend .ticks{ display:flex; justify-content:space-between; color:#556070; }
+</style>
+
+<script>
+/* ==============================================================
+   SOLERA — Parche para mejorar estética de PLOTLY y LEAFLET
+   No cambia tu layout ni los 4 KPIs. Sobrescribe funciones
+   bars(), renderBars() y buildMap() si ya existían.
+   Requiere que en tu página existan:
+     - aggregate(rows, selectedState)
+     - variables globales: rawRows, selectedState, geo, map
+=================================================================*/
+
+/* ---- Paleta y helpers de gradiente ---- */
+const SOLERA_THEME = {
+  grad: (t)=>{ // t∈[0,1]
+    const stops = [
+      [60,0,130],   // rgb(60,0,130)
+      [100,20,200], // rgb(100,20,200)
+      [156,54,255]  // rgb(156,54,255)
+    ];
+    const p = t*(stops.length-1);
+    const i = Math.floor(p), f = Math.min(1, p-i);
+    const a = stops[i], b = stops[Math.min(i+1, stops.length-1)];
+    const c = a.map((v,k)=>Math.round(v + (b[k]-v)*f));
+    return `rgb(${c[0]},${c[1]},${c[2]})`;
+  },
+  accent: '#ffbf3c',     // TOP 1
+  grid:   '#e8ecf3',
+  text:   '#0f172a',
+  bg:     '#ffffff',
+  hoverBg:'#11162f',
+  hoverFg:'#eef0fa'
+};
+
+/* ---- Tema Plotly limpio + hover oscuro ---- */
+const PLOT_THEME = {
+  template: {
+    layout: {
+      paper_bgcolor: SOLERA_THEME.bg,
+      plot_bgcolor:  SOLERA_THEME.bg,
+      font: {family: "Inter, system-ui, Segoe UI, Roboto, Arial", color: SOLERA_THEME.text, size: 13},
+      xaxis: {gridcolor: SOLERA_THEME.grid, zeroline:false, linecolor:'#e2e6f0', ticks:'outside'},
+      yaxis: {gridcolor: SOLERA_THEME.grid, zeroline:false, linecolor:'#e2e6f0'},
+      margin: {l:90, r:18, t:16, b:40},
+      hoverlabel: {bgcolor: SOLERA_THEME.hoverBg, font:{color: SOLERA_THEME.hoverFg, size:12}, bordercolor: SOLERA_THEME.hoverBg}
+    }
+  },
+  showlegend:false
+};
+
+/* ---- Barras con gradiente Solera + TOP1 dorado ---- */
+window.bars = function(container, data, xKey, title){
+  const top = data.slice().sort((a,b)=>b[xKey]-a[xKey]).slice(0,15);
+  const y = top.map(d=>d.Fabricante);
+  const x = top.map(d=>d[xKey]);
+
+  const n = x.length || 1;
+  const colors = x.map((_,i)=> i===0 ? SOLERA_THEME.accent : SOLERA_THEME.grad(i/(n-1)));
+
+  Plotly.newPlot(container,[{
+    type:'bar', orientation:'h',
+    x, y,
+    marker:{ color: colors, line:{color:'rgba(0,0,0,.08)', width:1} },
+    hovertemplate:`<b>%{y}</b><br>${title}: %{x:,}<extra></extra>`
+  }], PLOT_THEME, {displayModeBar:false, responsive:true});
+};
+
+/* ---- Render de tus tres gráficas (usa aggregate existente) ---- */
+window.renderBars = function(rows){
+  if(typeof aggregate!=='function'){ console.warn('aggregate(rows) no disponible'); return; }
+  const {fabA} = aggregate(rows, window.selectedState);
+
+  // 1) No. Valuaciones
+  window.bars('plot_val', fabA, 'NoVal', 'No de Valuaciones');
+
+  // 2) Piezas Sustituidas
+  window.bars('plot_pzs', fabA, 'Pzs', 'Piezas Sustituidas');
+
+  // 3) Costo medio por pieza (prom)
+  const cost = fabA.filter(f=>Number.isFinite(f.CostoProm))
+                   .map(f=>({...f, CostoProm: Math.round(f.CostoProm)}))
+                   .sort((a,b)=>b.CostoProm-a.CostoProm).slice(0,15);
+
+  const y = cost.map(d=>d.Fabricante);
+  const x = cost.map(d=>d.CostoProm);
+  const n = x.length || 1;
+  const colors = x.map((_,i)=> i===0 ? '#58d1ff' : SOLERA_THEME.grad(i/(n-1)));
+
+  Plotly.newPlot('plot_costo',[{
+    type:'bar', orientation:'h',
+    x, y,
+    marker:{ color:colors, line:{color:'rgba(0,0,0,.08)', width:1} },
+    hovertemplate:'<b>%{y}</b><br>Costo medio: %{x:,}<extra></extra>'
+  }], PLOT_THEME, {displayModeBar:false, responsive:true});
+};
+
+/* ---- Estética del mapa Leaflet con gradiente Solera + leyenda ---- */
+window.buildMap = function(rows){
+  if(!window.map){
+    window.map = L.map('map',{zoomControl:true, attributionControl:false}).setView([23.5,-102],5);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18}).addTo(window.map);
+  }
+  if(window.layer){ window.layer.remove(); window.layer=null; }
+  if(!window.geo){ console.warn('GeoJSON no cargado aún'); return; }
+
+  if(typeof aggregate!=='function'){ console.warn('aggregate(rows) no disponible'); return; }
+  const {estA} = aggregate(rows);
+  const dict = Object.fromEntries(estA.map(e=>[e.Estado, e]));
+
+  geo.features.forEach(f=>{
+    const k = (window.norm? window.norm : (s=>String(s).toUpperCase()))(f.properties.name);
+    f.properties.STATE_KEY = k;
+    f.properties.NoVal = dict[k]?.NoVal || 0;
+    f.properties.Pzs   = dict[k]?.Pzs   || 0;
+  });
+
+  const vals = geo.features.map(f=>f.properties.NoVal).sort((a,b)=>a-b);
+  const q = p => vals.length ? vals[Math.min(vals.length-1, Math.floor(p*(vals.length-1)))] : 0;
+  const qs = [q(.2), q(.4), q(.6), q(.8)];
+
+  const toClass = v => (v<=qs[0])?0:(v<=qs[1])?1:(v<=qs[2])?2:(v<=qs[3])?3:4;
+
+  window.layer = L.geoJSON(geo,{
+    style: f=>{
+      const idx = toClass(f.properties.NoVal);
+      const t = idx/4;
+      const color = SOLERA_THEME.grad(t);
+      return { fillColor:color, color:"#3b3f53", weight:0.9, fillOpacity:.96 };
+    },
+    onEachFeature: (f, lyr)=>{
+      const k=f.properties.STATE_KEY;
+      const html = `
+        <div style="font-weight:800;margin-bottom:4px">${f.properties.name}</div>
+        <div style="font-size:12px;color:#cbd5e1">
+          No. Valuaciones: <b>${(dict[k]?.NoVal??0).toLocaleString('es-MX')}</b><br/>
+          Piezas Sustituidas: <b>${(dict[k]?.Pzs??0).toLocaleString('es-MX')}</b>
+        </div>`;
+      lyr.bindTooltip(html,{sticky:true});
+      lyr.on('click',()=>{
+        window.selectedState = k;
+        const badge=document.getElementById('state_badge'); if(badge) badge.textContent = k;
+        if(window.renderKPIs) window.renderKPIs(window.rawRows);
+        if(window.renderBars) window.renderBars(window.rawRows);
+      });
+      lyr.on('mouseover',()=>lyr.setStyle({weight:2.2, color:"#11162f", fillOpacity:.99}));
+      lyr.on('mouseout', ()=>lyr.setStyle({weight:0.9, color:"#3b3f53", fillOpacity:.96}));
+    }
+  }).addTo(window.map);
+
+  // Leyenda (se reemplaza en cada render)
+  const old = document.querySelector('.mx-legend'); if(old) old.remove();
+  const legend = document.createElement('div');
+  legend.className = 'mx-legend';
+  legend.innerHTML = `
+    <div style="font-weight:700;font-size:12px;color:#2b2f4b">Intensidad (valuaciones)</div>
+    <div class="bar"></div>
+    <div class="ticks">
+      <span>${qs[0].toLocaleString('es-MX')}</span>
+      <span>${qs[2].toLocaleString('es-MX')}</span>
+      <span>${qs[3].toLocaleString('es-MX')}</span>
+    </div>`;
+  document.getElementById('map').appendChild(legend);
+};
+</script>
+
 </html>
