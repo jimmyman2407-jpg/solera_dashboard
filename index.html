@@ -14,13 +14,33 @@
     .screen{display:none;min-height:100vh}
     .screen.active{display:block}
 
-    /* ===== Portada tipo “Meet Our 2025 Models” ===== */
+    /* ===== Portada ===== */
     .hero-landing{
+      position:relative; /* para la marca de agua */
       min-height:100vh;
       display:flex; align-items:center; justify-content:center;
       background:#fff; padding:40px 24px;
+      overflow:hidden;
     }
+    /* Marca de agua “SOLERA” */
+    .watermark-bg{
+      position:absolute; inset:0;
+      display:flex; align-items:center; justify-content:center;
+      pointer-events:none; user-select:none; z-index:0;
+      font-weight:900; text-transform:uppercase; letter-spacing:8px;
+      color:#e5e7eb; /* gris claro */
+      opacity:.75;
+      line-height:1;
+      font-size:240px;
+      white-space:nowrap;
+      transform:translateY(6%);
+    }
+    @media (max-width:1200px){ .watermark-bg{font-size:200px} }
+    @media (max-width:900px){  .watermark-bg{font-size:160px; transform:translateY(8%)} }
+    @media (max-width:600px){  .watermark-bg{font-size:120px; transform:translateY(10%)} }
+
     .landing-wrap{
+      position:relative; z-index:1; /* encima de la marca de agua */
       max-width:980px; width:100%;
       display:flex; flex-direction:column; align-items:center;
       text-align:center;
@@ -30,6 +50,7 @@
       line-height:1.0; margin:0 0 18px;
       color:#2b2f33; text-transform:uppercase;
       font-size:64px;
+      text-shadow:0 2px 0 rgba(255,255,255,0.6);
     }
     @media (max-width:900px){ .landing-title{font-size:48px} }
     @media (max-width:600px){ .landing-title{font-size:38px} }
@@ -48,13 +69,7 @@
       font-weight:700; letter-spacing:.3px;
       box-shadow:0 10px 24px rgba(22,24,27,.18);
     }
-    .btn-ghost{
-      background:#fff; color:#2b2f33;
-      border:1px solid #e5e8ee; padding:12px 18px;
-      border-radius:10px; cursor:pointer; font-weight:700;
-      box-shadow:0 6px 16px rgba(17,17,26,.06);
-    }
-    .btn-dark:hover,.btn-ghost:hover{ transform:translateY(-1px) }
+    .btn-dark:hover{ transform:translateY(-1px) }
 
     /* ===== Nav (solo dashboard) ===== */
     .nav{position:sticky;top:0;z-index:10;background:var(--paper);border-bottom:1px solid var(--border);
@@ -93,6 +108,7 @@
   <!-- ===== Portada ===== -->
   <section id="screen-cover" class="screen active">
     <div class="hero-landing">
+      <div class="watermark-bg">SOLERA</div>
       <div class="landing-wrap">
         <h1 class="landing-title">
           SOLERA<br>
@@ -100,13 +116,12 @@
         </h1>
 
         <div class="landing-visual">
-          <!-- Si la imagen vive en otra carpeta, ajusta la ruta -->
+          <!-- Ajusta la ruta si tu imagen está en otra carpeta -->
           <img src="portadasolera.png" alt="Portada Solera">
         </div>
 
         <div class="landing-cta">
           <button class="btn-dark" onclick="go('login')">Ingresar</button>
-          <button class="btn-ghost" onclick="go('dashboard')">Ver demo</button>
         </div>
       </div>
     </div>
@@ -289,4 +304,3 @@
   </script>
 </body>
 </html>
-
