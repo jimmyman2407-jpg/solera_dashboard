@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Solera — Dashboard</title>
+  <title>Solera — Demo flujo completo</title>
   <style>
     :root{ --accent:#333; --cta:#111; --muted:#e9edf2; }
     * { box-sizing: border-box; }
     html,body{height:100%;margin:0;font-family:"Inter","Helvetica Neue",Arial,sans-serif;background:#fafafa;color:#111}
 
-    /* ======= SPA simple ======= */
+    /* ======= Layout base como SPA de una sola página ======= */
     .screen{ display:none; min-height:100vh; }
     .screen.active{ display:block; }
 
@@ -31,6 +31,7 @@
     .btn{background:var(--cta);color:#fff;padding:14px 26px;border-radius:10px;text-decoration:none;font-weight:700;letter-spacing:.6px;box-shadow:0 8px 18px rgba(17,17,17,.12);cursor:pointer;border:none}
     .btn.secondary{background:transparent;color:var(--accent);border:2px solid rgba(0,0,0,0.06);padding:12px 22px;border-radius:10px}
     footer{position:absolute;bottom:22px;width:100%;text-align:center;color:#777;font-size:13px}
+
     @media (max-width:640px){h1{font-size:40px}h2{font-size:34px}.watermark{font-size:120px;top:30%}.car-wrap{width:86%}}
 
     /* ======= Login ======= */
@@ -43,25 +44,52 @@
     .error{color:#b00020;font-size:13px;margin-top:6px;display:none}
     .toplink{position:absolute;left:16px;top:16px}
 
-    /* ======= Dashboard: look Apple-ish claro ======= */
+    /* ======= Dashboard ======= */
+    .nav{background:#111;color:#fff;padding:16px 20px;display:flex;gap:12px;align-items:center}
+    .nav .brand{display:flex;align-items:center;gap:10px;font-weight:700}
+    .nav .spacer{flex:1}
+    .nav a{color:#fff;text-decoration:none;background:rgba(255,255,255,0.08);padding:8px 10px;border-radius:8px}
+    .container{padding:28px}
+    .card2{background:#fff;padding:18px;border-radius:12px;box-shadow:0 10px 30px rgba(2,6,23,0.06);max-width:1100px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:16px}
+    .stat{padding:12px;border-radius:10px;background:#fbfcff;border:1px solid rgba(0,0,0,0.03)}
+  
+    /* ======= Dashboard Light Theme Overrides ======= */
     body{background:linear-gradient(180deg,#f7f8fb 0%,#f3f5f8 100%)}
     .nav{position:sticky;top:0;z-index:10;background:#ffffff;color:#111;padding:14px 20px;display:flex;gap:12px;align-items:center;border-bottom:1px solid #eceff3;box-shadow:0 6px 20px rgba(17,17,26,0.05)}
     .nav .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.2px}
     .nav .spacer{flex:1}
     .nav a{color:#111;text-decoration:none;background:linear-gradient(180deg,#ffffff,#f6f7fb);padding:8px 12px;border-radius:10px;border:1px solid #e6eaf0;box-shadow:0 2px 6px rgba(17,17,26,0.06)}
     .container{max-width:1280px;margin:0 auto;padding:32px}
+
     .card2{background:#fff;border:1px solid #eceff3;border-radius:16px;box-shadow:0 10px 30px rgba(2,6,23,0.06)}
     .card-pad{padding:18px}
+
     .grid-12{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px}
-    .col-3{grid-column:span 3}.col-4{grid-column:span 4}.col-5{grid-column:span 5}
-    .col-6{grid-column:span 6}.col-7{grid-column:span 7}.col-8{grid-column:span 8}.col-12{grid-column:span 12}
+    .col-3{grid-column:span 3}
+    .col-4{grid-column:span 4}
+    .col-5{grid-column:span 5}
+    .col-6{grid-column:span 6}
+    .col-7{grid-column:span 7}
+    .col-8{grid-column:span 8}
+    .col-12{grid-column:span 12}
     @media(max-width:900px){.col-3,.col-4,.col-5,.col-6,.col-7,.col-8{grid-column:span 12}}
+
     .kpi{display:flex;flex-direction:column;gap:8px}
     .kpi .title{font-size:13px;color:#6b7280;text-transform:uppercase;letter-spacing:.6px}
     .kpi .value{font-size:38px;font-weight:800;letter-spacing:.3px}
+    .trend{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:6px 10px;border-radius:999px;border:1px solid #e8edf2;background:linear-gradient(180deg,#fff,#f7f9fc);box-shadow:0 1px 3px rgba(15,23,42,0.06)}
+    .trend.up{color:#0a8f49}
+    .trend.down{color:#b91c1c}
+
+    .list{display:flex;flex-direction:column;gap:10px}
+    .row{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:12px;border:1px solid #eef1f5;background:linear-gradient(180deg,#ffffff,#fafbff)}
+
     .viz{min-height:280px;border-radius:16px;border:1px solid #eceff3;background:#ffffff;box-shadow:inset 0 1px 0 rgba(255,255,255,0.6),0 6px 20px rgba(17,17,26,0.04)}
+
     .badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:6px 10px;border-radius:999px;background:linear-gradient(180deg,#eef2ff,#e9ecff);border:1px solid #dfe5ff;color:#3f4ad1}
     .muted{color:#6b7280;font-size:13px}
+    .stat{padding:12px;border-radius:12px;background:linear-gradient(180deg,#fff,#f7f9fc);border:1px solid #eceff3}
   </style>
 </head>
 <body>
@@ -74,13 +102,12 @@
         <h2>KPI's</h2>
       </header>
       <div class="car-wrap">
-        <!-- Puedes cambiar por tu imagen base64 o url -->
-        <img class="car" src="https://dummyimage.com/960x540/efefef/111.png&text=Tu+Portada" alt="Portada"/>
+        <img class="car" id="heroImg" alt="Portada"/>
       </div>
       <div class="cta">
         <button class="btn" onclick="go('login')">Ingresar</button>
       </div>
-      <footer>Demo visual. Sustituye portada/logo según tu marca.</footer>
+      <footer>Demo visual — en tu proyecto real, la portada puede usar una imagen PNG/JPG.</footer>
     </div>
   </section>
 
@@ -89,6 +116,7 @@
     <div class="wrap">
       <div class="card">
         <a class="toplink" href="#" onclick="go('cover')">← Volver</a>
+        <img src="" alt="logo" style="height:42px;object-fit:cover;border-radius:6px;opacity:0.9;margin-bottom:14px;display:none" id="logoLogin"/>
         <h3>Acceso al dashboard</h3>
         <p class="sub">Introduce tu usuario y contraseña para continuar.</p>
         <form onsubmit="return doLogin(event)">
@@ -136,9 +164,9 @@
         </div>
       </div>
 
-      <!-- Nivel 2: Mapa izquierda + columna derecha -->
+      <!-- Nivel 2: Todo lo demás en una sola fila -->
       <div class="grid-12" style="margin-top:16px">
-        <!-- IZQUIERDA: Mapa (7/12) -->
+        <!-- IZQUIERDA: Mapa del país (ancho 7/12) -->
         <div class="card2 col-7">
           <div class="card-pad">
             <div class="title" style="margin-bottom:8px">Detalle High Level por Estado</div>
@@ -151,25 +179,30 @@
           </div>
         </div>
 
-        <!-- DERECHA: KPIs/Lists/Gráficas (5/12) -->
+        <!-- DERECHA: Columna apilada (ancho 5/12) -->
         <div class="col-5" style="display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px">
           <div class="card2 card-pad col-12">
-            <div class="title" style="margin-bottom:8px">Top Fabricantes con más Piezas Sustituidas</div>
-            <div class="list" id="list_fabricantes">
-              <!-- Se puede reemplazar por Plotly más adelante -->
-              <div class="muted">Cárgalo desde tu Sheet o con una figura.</div>
+            <div class="title" style="margin-bottom:8px">Top Fabricantes con más piezas Sustituidas</div>
+            <div class="list">
+              <div class="row"><span>Honda</span><strong>8,600</strong></div>
+              <div class="row"><span>Ford</span><strong>8,500</strong></div>
+              <div class="row"><span>MG</span><strong>7,540</strong></div>
+              <div class="row"><span>Mazda</span><strong>7,480</strong></div>
+              <div class="row"><span>Nissan</span><strong>6,530</strong></div>
             </div>
           </div>
 
           <div class="card2 card-pad col-12">
             <div class="title" style="margin-bottom:8px">Modelos con más No Valuaciones</div>
-            <div class="list" id="list_modelos">
-              <div class="muted">Placeholder por ahora.</div>
+            <div class="list">
+              <div class="row"><span>Modelo A</span><span class="badge">19.5k <small>▲ 11</small></span></div>
+              <div class="row"><span>Modelo B</span><span class="badge">10.5k <small>▲ 22</small></span></div>
+              <div class="row"><span>Modelo C</span><span class="badge">9.1k <small>▲ 7</small></span></div>
             </div>
           </div>
 
           <div class="card2 card-pad col-12">
-            <div class="title" style="margin-bottom:8px">NPS y Feedback</div>
+            <div class="title" style="margin-bottom:8px">Versiones con más piezas sustituidas</div>
             <div class="viz" style="height:120px;display:flex;align-items:center;justify-content:center">Gauge aquí</div>
             <div class="list" style="margin-top:10px">
               <div class="row">OK <span class="muted">— 14 días</span></div>
@@ -179,85 +212,139 @@
         </div>
       </div>
 
-      <div class="muted" style="margin-top:18px">🟢 Solera — dashboard demo</div>
+      <div class="muted" style="margin-top:18px">🟢 Solera tu ayor aliado</div>
     </div>
   </section>
 
-  <!-- CSV parser para Google Sheets publicado -->
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-
   <script>
-    // --------- Config: tu Google Sheet publicado ---------
-    const SHEET_URL_HTML = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTY8caVTcwnisoepB9R_rBQ2DAKlmxpTfA3WYqgaZQF2I2J2abE68cyJWvyd9Byu8QOP-N0nwOHWQ2K/pubhtml";
-    const SHEET_URL_CSV  = SHEET_URL_HTML.replace("/pubhtml","/pub?output=csv");
-
-    // --------- SPA navegación ---------
+    // Navegación simple de pantallas
     function go(where){
       const ids = ['cover','login','dashboard'];
-      ids.forEach(id=>document.getElementById('screen-'+id).classList.remove('active'));
+      ids.forEach(id=>{
+        document.getElementById('screen-'+id).classList.remove('active');
+      });
       document.getElementById('screen-'+where).classList.add('active');
       window.scrollTo({top:0, behavior:'instant'});
     }
+
     function doLogin(e){
       e.preventDefault();
       const u = document.getElementById('user').value.trim();
       const p = document.getElementById('pass').value.trim();
       const err = document.getElementById('err');
-      if(u==='admin' && p==='1234'){ go('dashboard'); }
-      else{ err.style.display='block'; setTimeout(()=> err.style.display='none', 3000); }
+      if(u==='admin' && p==='1234'){
+        go('dashboard');
+      } else {
+        err.style.display = 'block';
+        setTimeout(()=> err.style.display='none', 3000);
+      }
       return false;
     }
-    function logout(){ go('cover'); document.getElementById('user').value=''; document.getElementById('pass').value=''; }
 
-    // --------- Util: parseo numérico coma/punto ---------
+    function logout(){
+      // Limpia cualquier estado y vuelve a portada
+      go('cover');
+      // Opcional: limpiar campos
+      document.getElementById('user').value='';
+      document.getElementById('pass').value='';
+    }
+  </script>
+  
+  <script>
+  // === Carga robusta de la portada desde GitHub Pages ===
+  (function(){
+    var vers = Date.now();
+    var paths = [
+      './portadasolera.png',
+      'portadasolera.png',
+      './assets/portadasolera.png',
+      'assets/portadasolera.png'
+    ];
+    var hero = document.getElementById('heroImg');
+    var logo = document.getElementById('logoLogin');
+    var i = 0;
+    function tryNext(){
+      if(i >= paths.length){ hero.alt = 'No se encontró portadasolera.png'; return; }
+      var src = paths[i] + '?v=' + vers; // rompe caché de GitHub Pages
+      hero.onerror = function(){ i++; tryNext(); };
+      hero.onload  = function(){ if(logo){ logo.src = src; logo.style.display='block'; } };
+      hero.src = src;
+    }
+    tryNext();
+  })();
+</script>
+<!-- Auto-actualización: KPIs desde Google Sheets + refresh del mapa -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script>
+    // === CONFIG ===
+    var SHEET_URL_HTML = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTY8caVTcwnisoepB9R_rBQ2DAKlmxpTfA3WYqgaZQF2I2J2abE68cyJWvyd9Byu8QOP-N0nwOHWQ2K/pubhtml";
+    var SHEET_URL_CSV  = SHEET_URL_HTML.replace("/pubhtml","/pub?output=csv");
+
+    // Evita usar regex en el reemplazo del canvas: parseo "a mano"
     function parseNumLocale(x){
       if(x===null||x===undefined) return null;
-      let s = String(x).trim().replace(/\s+/g,'').replace(/\$/g,'');
-      if(s.includes(',') && s.includes('.')){
-        if(s.lastIndexOf(',') > s.lastIndexOf('.')){ s = s.replace(/\./g,'').replace(',', '.'); }
-        else { s = s.replace(/,/g,''); }
-      } else if(s.includes(',') && !s.includes('.')){
-        s = s.replace(/\./g,'').replace(',', '.');
+      var s = String(x);
+      // quita espacios
+      s = s.split(' ').join('');
+      // quita símbolo $
+      while(s.indexOf('$')!==-1){ s = s.replace('$',''); }
+      var hasComma = s.indexOf(',')>-1; var hasDot = s.indexOf('.')>-1;
+      if(hasComma && hasDot){
+        // decide por la última aparición
+        if(s.lastIndexOf(',') > s.lastIndexOf('.')){
+          // 1.234,56 -> 1234.56
+          s = s.split('.').join(''); s = s.replace(',', '.');
+        } else {
+          // 1,234.56 -> 1234.56
+          s = s.split(',').join('');
+        }
+      } else if(hasComma && !hasDot){
+        // 1234,56 -> 1234.56
+        s = s.split('.').join(''); s = s.replace(',', '.');
       }
-      const v = Number(s); return Number.isFinite(v) ? v : null;
+      var v = Number(s); return isFinite(v) ? v : null;
     }
 
-    // --------- Carga y KPIs en cliente ---------
-    async function loadKPIs(){
-      return new Promise((resolve,reject)=>{
-        Papa.parse(SHEET_URL_CSV, {
+    function loadKPIs(){
+      return new Promise(function(resolve,reject){
+        Papa.parse(SHEET_URL_CSV,{
           download:true, header:true, dynamicTyping:false, skipEmptyLines:true,
-          complete: (res)=>{
+          complete: function(res){
             try{
-              const rows = res.data.filter(r=>r && r.Estado && r.Fabricante);
-              for(const r of rows){
+              var data = res.data || [];
+              var rows = data.filter(function(r){ return r && r.Estado && r.Fabricante; });
+              for(var i=0;i<rows.length;i++){
+                var r = rows[i];
                 r["No Valuaciones"]     = parseNumLocale(r["No Valuaciones"]);
                 r["Piezas Sustituidas"] = parseNumLocale(r["Piezas Sustituidas"]);
                 r["Costo Medio Pieza"]  = parseNumLocale(r["Costo Medio Pieza"]);
               }
-              const aggEstado = new Map(), aggFab = new Map();
-              for(const r of rows){
-                const e = String(r.Estado||'').trim();
-                const f = String(r.Fabricante||'').trim();
-                const nv = r["No Valuaciones"]||0, pz = r["Piezas Sustituidas"]||0;
-                if(!aggEstado.has(e)) aggEstado.set(e,{Estado:e, No_Valuaciones:0, Piezas_Sustituidas:0});
-                if(!aggFab.has(f))    aggFab.set(f,   {Fabricante:f, No_Valuaciones:0, Piezas_Sustituidas:0});
-                aggEstado.get(e).No_Valuaciones     += nv; aggEstado.get(e).Piezas_Sustituidas     += pz;
-                aggFab.get(f).No_Valuaciones        += nv; aggFab.get(f).Piezas_Sustituidas        += pz;
+              var aggEstado = {}; var aggFab = {};
+              for(var j=0;j<rows.length;j++){
+                var rr = rows[j];
+                var e = String(rr.Estado||'').trim();
+                var f = String(rr.Fabricante||'').trim();
+                var nv = rr["No Valuaciones"]||0; var pz = rr["Piezas Sustituidas"]||0;
+                if(!aggEstado[e]) aggEstado[e] = {Estado:e, No_Valuaciones:0, Piezas_Sustituidas:0};
+                if(!aggFab[f])    aggFab[f]    = {Fabricante:f, No_Valuaciones:0, Piezas_Sustituidas:0};
+                aggEstado[e].No_Valuaciones     += nv; aggEstado[e].Piezas_Sustituidas     += pz;
+                aggFab[f].No_Valuaciones        += nv; aggFab[f].Piezas_Sustituidas        += pz;
               }
-              const estRows = Array.from(aggEstado.values());
-              const fabRows = Array.from(aggFab.values());
-              const topEV = estRows.reduce((a,b)=> (b.No_Valuaciones     > (a?.No_Valuaciones||-Infinity)     ? b:a), null);
-              const topEP = estRows.reduce((a,b)=> (b.Piezas_Sustituidas > (a?.Piezas_Sustituidas||-Infinity) ? b:a), null);
-              const topFV = fabRows.reduce((a,b)=> (b.No_Valuaciones     > (a?.No_Valuaciones||-Infinity)     ? b:a), null);
-              const topFP = fabRows.reduce((a,b)=> (b.Piezas_Sustituidas > (a?.Piezas_Sustituidas||-Infinity) ? b:a), null);
-
-              const fmtInt = (x)=> (x==null? '—' : Number(Math.round(x)).toLocaleString('es-MX'));
-              document.getElementById('kpi_estado_val').textContent = topEV ? `${topEV.Estado}  ·  ${fmtInt(topEV.No_Valuaciones)}` : '—';
-              document.getElementById('kpi_fab_val').textContent    = topFV ? `${topFV.Fabricante}  ·  ${fmtInt(topFV.No_Valuaciones)}` : '—';
-              document.getElementById('kpi_estado_pzs').textContent = topEP ? `${topEP.Estado}  ·  ${fmtInt(topEP.Piezas_Sustituidas)}` : '—';
-              document.getElementById('kpi_fab_pzs').textContent    = topFP ? `${topFP.Fabricante}  ·  ${fmtInt(topFP.Piezas_Sustituidas)}` : '—';
-
+              function topBy(arr, key){
+                var best=null; for(var k=0;k<arr.length;k++){ var it=arr[k]; if(!best||it[key]>best[key]) best=it; } return best;
+              }
+              var estRows=[]; for(var k in aggEstado){ if(Object.prototype.hasOwnProperty.call(aggEstado,k)) estRows.push(aggEstado[k]); }
+              var fabRows=[]; for(var h in aggFab){ if(Object.prototype.hasOwnProperty.call(aggFab,h)) fabRows.push(aggFab[h]); }
+              var topEV = topBy(estRows,'No_Valuaciones');
+              var topEP = topBy(estRows,'Piezas_Sustituidas');
+              var topFV = topBy(fabRows,'No_Valuaciones');
+              var topFP = topBy(fabRows,'Piezas_Sustituidas');
+              function fmtInt(x){ if(x==null) return '—'; return Number(Math.round(x)).toLocaleString('es-MX'); }
+              function setTxt(id, txt){ var n=document.getElementById(id); if(n) n.textContent = txt; }
+              setTxt('kpi_estado_val', topEV ? (topEV.Estado+" · "+fmtInt(topEV.No_Valuaciones)) : '—');
+              setTxt('kpi_fab_val',    topFV ? (topFV.Fabricante+" · "+fmtInt(topFV.No_Valuaciones)) : '—');
+              setTxt('kpi_estado_pzs', topEP ? (topEP.Estado+" · "+fmtInt(topEP.Piezas_Sustituidas)) : '—');
+              setTxt('kpi_fab_pzs',    topFP ? (topFP.Fabricante+" · "+fmtInt(topFP.Piezas_Sustituidas)) : '—');
               resolve();
             }catch(err){ reject(err); }
           },
@@ -266,27 +353,37 @@
       });
     }
 
-    // --------- Auto-refresh del mapa (opcional) ---------
-    const MX_IFRAME_URL = document.getElementById('mx_iframe')?.getAttribute('src') || 'mx_map.html';
-    let mxInterval = null;
+    // Auto-refresh del mapa Folium (iframe) + KPIs
+    var MX_IFRAME_URL = (document.getElementById('mx_iframe') && document.getElementById('mx_iframe').getAttribute('src')) || 'mx_map.html';
+    var __mxInterval = null, __kpiInterval = null;
     function refreshMxMap(){
-      const f = document.getElementById('mx_iframe'); if(!f) return;
-      f.src = MX_IFRAME_URL + (MX_IFRAME_URL.includes('?')?'&':'?') + 't=' + Date.now();
+      var f = document.getElementById('mx_iframe'); if(!f) return;
+      f.src = MX_IFRAME_URL + (MX_IFRAME_URL.indexOf('?')>-1?'&':'?') + 't=' + Date.now();
     }
-    function startAutoRefresh(seconds=180){ stopAutoRefresh(); mxInterval = setInterval(refreshMxMap, seconds*1000); }
-    function stopAutoRefresh(){ if(mxInterval) clearInterval(mxInterval), mxInterval=null; }
+    function startAuto(){
+      stopAuto();
+      loadKPIs().catch(function(e){console.error(e);});
+      __kpiInterval = setInterval(function(){ loadKPIs().catch(function(e){console.error(e);}); }, 120*1000);
+      __mxInterval  = setInterval(refreshMxMap, 180*1000);
+    }
+    function stopAuto(){
+      if(__kpiInterval){ clearInterval(__kpiInterval); __kpiInterval=null; }
+      if(__mxInterval){  clearInterval(__mxInterval);  __mxInterval=null; }
+    }
 
-    // Hook en navegación para inicializar dashboard
-    const __go = window.go;
-    window.go = function(where){
-      __go(where);
-      if(where==='dashboard'){
-        loadKPIs().catch(console.error);
-        // startAutoRefresh(180); // <- descomenta si quieres refrescar el mapa cada 3 min
-      } else {
-        stopAutoRefresh();
-      }
-    }
+    // Hook de navegación
+    (function(){
+      var __oldGo = window.go;
+      window.go = function(where){
+        __oldGo(where);
+        if(where==='dashboard'){ startAuto(); } else { stopAuto(); }
+      };
+      // Si el dashboard ya está activo al cargar
+      document.addEventListener('DOMContentLoaded', function(){
+        var dd = document.getElementById('screen-dashboard');
+        if(dd && dd.classList.contains('active')) startAuto();
+      });
+    })();
   </script>
 </body>
 </html>
