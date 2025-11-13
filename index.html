@@ -16,18 +16,28 @@
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
 <style>
+  /* ======== PALETA SOLERA + BASE ======== */
   :root{
-    --bg:#f7f9fc; --paper:#fff; --ink:#0f172a; --muted:#6b7280; --border:#e8ecf3;
-    --shadow:0 20px 50px rgba(10,20,30,.08);
-    --grad-purple: linear-gradient(90deg, rgb(60,0,130), rgb(100,20,200), rgb(156,54,255));
-    --ink-strong:#0b1324; --ink-soft:#5b667a; --ring:#e8ecf3; --surface:#fff;
+    --bg:#f7f9fc; --paper:#ffffff; --border:#e8ecf3;
+    --ink:#0f172a; --muted:#6b7280;
+    --solera-dark:#120a35;   /* fondo navy púrpura */
+    --solera-mid:#1a1050;    /* intermedio */
+    --solera-ink:#eef0fa;    /* texto claro en fondo oscuro */
+    --solera-accent:#9b8cff; /* lila corporativo */
+    --solera-grad: linear-gradient(90deg, rgb(60,0,130), rgb(100,20,200), rgb(156,54,255));
+    --shadow-lg: 0 24px 60px rgba(20,12,60,.18);
+    --shadow-md: 0 16px 40px rgba(20,12,60,.12);
+    --shadow-sm: 0 10px 28px rgba(20,12,60,.10);
   }
+
   *{box-sizing:border-box}
   html,body{height:100%;margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif}
+
+  /* ======== VISTAS ======== */
   .screen{display:none;min-height:100vh}
   .screen.active{display:block}
 
-  /* ===== Portada ===== */
+  /* ======== PORTADA ======== */
   .hero-landing{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#fff;padding:40px 24px;overflow:hidden}
   .watermark-bg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;user-select:none;z-index:0;font-weight:900;text-transform:uppercase;letter-spacing:8px;color:#e5e7eb;opacity:.75;line-height:1;font-size:240px;white-space:nowrap;transform:translateY(6%)}
   @media (max-width:1200px){ .watermark-bg{font-size:200px} }
@@ -39,54 +49,83 @@
   @media (max-width:600px){ .landing-title{font-size:38px} }
   .landing-visual{margin:18px 0 20px;max-width:520px;width:100%;filter:drop-shadow(0 18px 40px rgba(0,0,0,.12))}
   .landing-visual img{width:100%;height:auto;display:block;object-fit:contain}
-  .btn-dark{background:#16181b;color:#fff;border:0;padding:12px 18px;border-radius:10px;cursor:pointer;font-weight:700;letter-spacing:.3px;box-shadow:0 10px 24px rgba(22,24,27,.18)}
+  .btn-dark{
+    background:var(--solera-grad);color:#fff;border:0;padding:12px 18px;border-radius:10px;cursor:pointer;
+    font-weight:700;letter-spacing:.3px;box-shadow:var(--shadow-md);transition:transform .15s ease, box-shadow .15s ease
+  }
   .btn-dark:hover{transform:translateY(-1px)}
 
-  /* ===== Login (restaurado) ===== */
-  #screen-login .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background: var(--bg)}
-  #screen-login .card{width:100%;max-width:420px;background:#fff;border:1px solid var(--border);border-radius:14px;padding:26px;box-shadow:var(--shadow)}
+  /* ======== LOGIN (mismo diseño previo) ======== */
+  #screen-login .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:var(--bg)}
+  #screen-login .card{width:100%;max-width:420px;background:#fff;border:1px solid var(--border);border-radius:14px;padding:26px;box-shadow:var(--shadow-md)}
   #screen-login h3{margin:0 0 10px 0;font-weight:800;color:#111827}
   #screen-login p{color:#6b7280;margin:0 0 16px 0}
   #screen-login label{display:block;font-size:13px;color:#374151;margin-bottom:6px}
-  #screen-login input[type="text"], #screen-login input[type="password"]{width:100%;padding:12px 14px;border:1px solid #e6e9ee;border-radius:8px;background:#fff;color:#111827;outline:none;transition:border-color .2s, box-shadow .2s;margin-bottom:12px}
+  #screen-login input[type="text"], #screen-login input[type="password"]{
+    width:100%;padding:12px 14px;border:1px solid #e6e9ee;border-radius:8px;background:#fff;color:#111827;outline:none;transition:border-color .2s, box-shadow .2s;margin-bottom:12px
+  }
   #screen-login input[type="text"]:focus, #screen-login input[type="password"]:focus{border-color:#cfd7ef;box-shadow:0 0 0 4px rgba(99,102,241,.12)}
   #screen-login .btn{background:#111827;color:#fff;padding:12px 20px;border-radius:10px;border:none;cursor:pointer;font-weight:700;letter-spacing:.3px;transition:transform .15s ease, box-shadow .15s ease}
   #screen-login .btn:hover{transform:translateY(-1px)}
   #screen-login .btn.secondary{background:transparent;color:#111827;border:1px solid var(--border)}
   #screen-login .error{color:#b00020;font-size:13px;display:none;margin-top:6px}
 
-  /* ===== Nav ===== */
-  .nav{position:sticky;top:0;z-index:10;background:var(--paper);border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:center;justify-content:space-between;padding:14px 20px;box-shadow:0 6px 20px rgba(17,17,26,.05)}
+  /* ======== NAV ======== */
+  .nav{
+    position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--border);
+    display:flex;gap:12px;align-items:center;justify-content:space-between;padding:14px 20px;box-shadow:0 6px 20px rgba(17,17,26,.05)
+  }
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.4px}
+  .brand-mark{width:28px;height:28px;border-radius:7px;background:var(--solera-grad)}
   .nav a{color:var(--ink);text-decoration:none;border:1px solid var(--border);border-radius:10px;padding:8px 12px;background:linear-gradient(#fff,#f8f9ff)}
+  .nav a:hover{border-color:#dfe4f3}
 
-  /* ===== Layout ===== */
+  /* ======== LAYOUT Y TARJETAS ======== */
   .container{max-width:1280px;margin:0 auto;padding:24px}
   .grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px}
   .col-12{grid-column:span 12}.col-7{grid-column:span 7}.col-5{grid-column:span 5}
-  .card{background:var(--paper);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow)}
+  .card{background:var(--paper);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-sm)}
   .head{padding:14px 16px;border-bottom:1px solid var(--border);font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
   .body{padding:12px}
   .viz{height:240px}
+
+  /* ======== MAPA ======== */
   #map{height:520px;border-radius:14px;overflow:hidden}
   .toolbar{display:flex;gap:8px;align-items:center;margin:10px 0 0 0;flex-wrap:wrap}
   .btn{border:1px solid var(--border);background:#fff;border-radius:10px;padding:8px 10px;cursor:pointer}
-  .btn.primary{background:#111827;color:#fff;border-color:#101827}
+  .btn.primary{background:var(--solera-grad);color:#fff;border-color:transparent}
   .pill{display:inline-flex;align-items:center;gap:8px;background:#f2f4ff;border:1px solid #e3e7ff;color:#2b2f4b;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:600}
   .state-badge{margin-left:6px}
 
-  /* ===== KPI cards ===== */
+  /* ======== KPIs (NO CAMBIAR COMPORTAMIENTO) ======== */
   .kpis{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px}
-  .kpi{grid-column:span 3;position:relative;border-radius:18px;background:var(--surface);border:1px solid var(--ring);box-shadow:0 10px 24px rgba(17,23,39,.06);padding:22px 22px 20px;transition:all .35s ease;overflow:hidden}
-  .kpi .sub{font-size:13px;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-soft);margin:0 0 12px}
-  .kpi .name{font-size:42px;font-weight:900;line-height:1.05;color:var(--ink-strong);margin:0 0 8px}
+  .kpi{grid-column:span 3;position:relative;border-radius:18px;background:#fff;border:1px solid var(--border);box-shadow:0 10px 24px rgba(17,23,39,.06);padding:22px 22px 20px;transition:all .35s ease;overflow:hidden}
+  .kpi .sub{font-size:13px;text-transform:uppercase;letter-spacing:.6px;color:#5b667a;margin:0 0 12px}
+  .kpi .name{font-size:42px;font-weight:900;line-height:1.05;color:#0b1324;margin:0 0 8px}
   .kpi .num{font-size:34px;font-weight:800;line-height:1.05;color:#101827;margin:0;letter-spacing:.3px}
-  .kpi::after{content:"↗";position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:999px;display:grid;place-items:center;font-weight:700;font-size:16px;color:#0f172a;background:#fff;border:1px solid var(--ring);box-shadow:0 6px 14px rgba(17,23,39,.08);transition:all .35s ease}
-  .kpi:hover{background:var(--grad-purple);border-color:transparent;transform:translateY(-2px);box-shadow:0 18px 40px rgba(78,0,150,.25)}
+  .kpi::after{content:"↗";position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:999px;display:grid;place-items:center;font-weight:700;font-size:16px;color:#0f172a;background:#fff;border:1px solid var(--border);box-shadow:0 6px 14px rgba(17,23,39,.08);transition:all .35s ease}
+  .kpi:hover{background:var(--solera-grad);border-color:transparent;transform:translateY(-2px);box-shadow:0 18px 40px rgba(78,0,150,.25)}
   .kpi:hover .sub,.kpi:hover .name,.kpi:hover .num{color:#fff}
   .kpi:hover::after{color:#fff;background:rgba(255,255,255,.12);border-color:transparent}
 
   @media(max-width:900px){ .col-7,.col-5{grid-column:span 12} .kpi{grid-column:span 6} .kpi .name{font-size:36px} .kpi .num{font-size:30px} }
   @media(max-width:640px){ .kpi{grid-column:span 12} .container{padding:16px} .kpi .name{font-size:32px} .kpi .num{font-size:28px} }
+
+  /* ======== FOOTER CORPORATIVO ======== */
+  .site-footer{
+    margin-top:32px;background:var(--solera-dark);color:var(--solera-ink)
+  }
+  .footer-wrap{max-width:1280px;margin:0 auto;padding:40px 24px;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px}
+  .foot-col{grid-column:span 4}
+  .foot-brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:.4px}
+  .foot-mark{width:34px;height:34px;border-radius:8px;background:var(--solera-grad)}
+  .foot-links a{display:block;color:var(--solera-ink);text-decoration:none;opacity:.92;margin:8px 0}
+  .foot-links a:hover{opacity:1}
+  .foot-cta{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);padding:16px;border-radius:14px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.04)}
+  .foot-cta .btn{
+    background:#ffbf3c;border:0;color:#1d1b30;font-weight:800;border-radius:12px;padding:10px 14px;cursor:pointer
+  }
+  .footer-bottom{border-top:1px solid rgba(255,255,255,.12);padding:14px 24px;text-align:center;font-size:13px;opacity:.8}
 </style>
 </head>
 <body>
@@ -128,7 +167,7 @@
 <!-- ===== DASHBOARD ===== -->
 <section id="screen-dashboard" class="screen">
   <nav class="nav">
-    <div style="font-weight:700">SOLERA — Dashboard</div>
+    <div class="brand"><span class="brand-mark"></span> SOLERA — Dashboard</div>
     <a href="#" onclick="logout();return false;">Cerrar sesión</a>
   </nav>
 
@@ -186,6 +225,31 @@
       </div>
     </div>
   </div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="site-footer">
+    <div class="footer-wrap">
+      <div class="foot-col">
+        <div class="foot-brand"><span class="foot-mark"></span> SOLERA</div>
+        <p style="opacity:.8;margin:12px 0 0">Copyright © 2025 Solera. All Rights Reserved.</p>
+      </div>
+      <div class="foot-col foot-links">
+        <strong style="display:block;margin-bottom:6px">Políticas</strong>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Policies & Downloads</a>
+        <a href="#">Preferencias de cookies</a>
+        <a href="#">Exercise Your Rights</a>
+      </div>
+      <div class="foot-col">
+        <div class="foot-cta">
+          <h4 style="margin:0 0 8px">Come work with us</h4>
+          <p style="margin:0 0 12px;opacity:.9">Solera is expanding in exciting ways. Join a team of like-minded colleagues.</p>
+          <button class="btn">JOIN THE TEAM</button>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">Hecho con ❤ · Gradiente guía de marca</div>
+  </footer>
 </section>
 
 <script>
@@ -340,7 +404,6 @@
 
   /* ============== MAPA (Leaflet) ============== */
   function colorScale(clase){
-    // 5 clases
     const pal = {"Muy bajo":"#B0BEC5","Bajo":"#26C6DA","Medio":"#2979FF","Alto":"#FF8F00","Muy alto":"#00C853"};
     return pal[clase]||"#B0BEC5";
   }
@@ -363,10 +426,8 @@
     }
     if(layer){ layer.remove(); layer=null; }
 
-    // agregados por estado (NoVal base)
     const {estA} = aggregate(rows);
     const dict = Object.fromEntries(estA.map(e=>[e.Estado, e]));
-    // añade STATE_KEY a geo
     geo.features.forEach(f=>{
       const k = norm(f.properties.name);
       f.properties.STATE_KEY = k;
@@ -431,11 +492,9 @@
 
   /* ============== INIT ============== */
   document.addEventListener('DOMContentLoaded',()=>{
-    // Si entras directo al dashboard (debug)
     if(document.getElementById('screen-dashboard').classList.contains('active')) startAuto();
   });
 </script>
 
 </body>
 </html>
-
