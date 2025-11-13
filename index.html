@@ -137,7 +137,8 @@
   @media (prefers-reduced-motion: reduce){
     *{scroll-behavior:auto}
   }
-===== Hero refinado ======= */
+
+  /* ======= Hero refinado ======= */
   .hero{height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:
     radial-gradient(100% 80% at 10% 10%, #eef2f7 0%, rgba(255,255,255,0.8) 40%, #ffffff 100%),
     linear-gradient(180deg, #ffffff 0%, #f6f8fb 100%);
@@ -151,27 +152,53 @@
   .watermark{position:absolute;inset:auto auto 8% 50%;transform:translateX(-50%);font-size:200px;font-weight:900;color:rgba(0,0,0,0.05);letter-spacing:6px;user-select:none;pointer-events:none}
   @media(max-width:1080px){.hero-inner{grid-template-columns:1fr;gap:20px}.hero-card{order:2}.visual{order:1}.watermark{font-size:160px;bottom:6%}}
   @media(max-width:680px){.watermark{font-size:120px;bottom:5%} h1{font-size:44px} h2{font-size:32px}}
+
+  /* ======= Nuevo Hero (visual mejorado) ======= */
+  .hero-v2{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;background:linear-gradient(180deg,#f7f9fc 0%,#f3f5f8 100%)}
+  .hero-shell{width:100%;max-width:1200px;display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center}
+  .hero-copy{padding:28px 28px 26px 28px;border-radius:20px;border:1px solid #e8ecf3;background:linear-gradient(180deg,#ffffff 0%,#fbfcff 100%);box-shadow:0 30px 70px rgba(12,20,33,0.08)}
+  .hero-title{font-size:56px;line-height:1.04;margin:4px 0 10px 0;letter-spacing:.2px;color:#0f172a}
+  .hero-lead{font-size:18px;line-height:1.45;color:#475569;margin:0 0 14px 0;max-width:54ch}
+  .btn-grad{background:linear-gradient(180deg,#111,#1b1b1f);border:1px solid rgba(0,0,0,0.15)}
+  .hero-visual-v2{height:520px;border-radius:22px;border:1px solid #e8ecf3;box-shadow:0 30px 70px rgba(12,20,33,0.10), inset 0 1px 0 rgba(255,255,255,0.7);background:
+    linear-gradient(180deg,rgba(255,255,255,0.0) 0%,rgba(255,255,255,0.18) 65%),
+    url('portadasolera.png') center/cover no-repeat;position:relative}
+  .hero-visual-v2::after{content:"";position:absolute;inset:0;border-radius:22px;background:radial-gradient(60% 40% at 75% 35%, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.0) 60%)}
+  .watermark{display:none}
+
+  /* Responsivo del hero */
+  @media (max-width:1100px){
+    .hero-shell{grid-template-columns:1.05fr .95fr}
+    .hero-title{font-size:48px}
+    .hero-visual-v2{height:480px}
+  }
+  @media (max-width:880px){
+    .hero-shell{grid-template-columns:1fr;gap:20px}
+    .hero-copy{order:2}
+    .hero-visual-v2{order:1;height:380px}
+  }
+  @media (max-width:560px){
+    .hero-title{font-size:38px}
+    .hero-lead{font-size:16px}
+    .hero-visual-v2{height:300px}
+  }
 </style>
 </head>
 <body>
   <!-- ======= Pantalla 1: Portada ======= -->
   <section id="screen-cover" class="screen active">
-  <div class="hero">
-    <div class="watermark">SOLERA</div>
-    <div class="hero-inner">
-      <div class="pitch card2 card-pad hero-card">
+  <div class="hero hero-v2">
+    <div class="hero-shell">
+      <div class="hero-copy card2">
         <div class="eyebrow">Reporte Ejecutivo</div>
-        <h1>Dashboard</h1>
-        <h2>KPI's</h2>
-        <p class="sublead">Visión clara de performance con datos al día. Entra para explorar el detalle por estado, flogin')">Ingresar</button>
+        <h1 class="hero-title">Dashboard</h1>
+        <p class="hero-lead">Monitorea desempeño en tiempo real y navega por estado, fabricante y modelo con una interfaz limpia.</p>
+        <div class="cta">
+          <button class="btn btn-grad" onclick="go('login')">Ingresar</button>
           <a class="btn secondary" href="#" onclick="go('dashboard');return false;">Ver demo</a>
         </div>
       </div>
-      <div class="visual">
-        <div class="car-wrap hero-visual">
-          <img class="car" id="heroImg" alt="Portada"/>
-        </div>
-      </div>
+      <div class="hero-visual-v2" aria-hidden="true"></div>
     </div>
   </div>
 </section>
@@ -278,7 +305,12 @@
       </div>
 
       
-    </dnction go(where){
+    </div>
+  </section>
+
+  <script>
+    // Navegación simple de pantallas
+    function go(where){
       const ids = ['cover','login','dashboard'];
       ids.forEach(id=>{
         document.getElementById('screen-'+id).classList.remove('active');
