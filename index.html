@@ -68,15 +68,6 @@
     .viz{min-height:280px;border:1px solid var(--border);border-radius:16px;background:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 6px 20px rgba(17,17,26,.04)}
     .title{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
 
-    /* ===== Login ===== */
-    .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
-    .card{width:100%;max-width:420px;background:#fff;border:1px solid var(--border);border-radius:14px;padding:26px;box-shadow:var(--shadow)}
-    label{display:block;font-size:13px;color:#333;margin-bottom:6px}
-    input[type=text],input[type=password]{width:100%;padding:12px 14px;border:1px solid #e6e9ee;border-radius:8px;margin-bottom:12px}
-    .btn{background:#111;color:#fff;padding:12px 20px;border-radius:10px;border:none;cursor:pointer;font-weight:700;letter-spacing:.3px}
-    .btn.secondary{background:transparent;color:var(--ink);border:1px solid var(--border)}
-    .error{color:#b00020;font-size:13px;display:none;margin-top:6px}
-
     /* ===== KPI cards (fila 1, estilo moderno + hover morado) ===== */
     .kpi-row{ display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); gap:16px; }
     .kpi-card{
@@ -90,8 +81,11 @@
       transition: all .35s ease;
       overflow:hidden;
     }
-    .kpi-head{ font-size:13px; text-transform:uppercase; letter-spacing:.6px; color:var(--ink-soft); margin:0 0 10px; }
-    .kpi-val{  font-size:40px; font-weight:900; line-height:1.05; color:var(--ink-strong); margin:0; }
+    .kpi-head{ font-size:13px; text-transform:uppercase; letter-spacing:.6px; color:var(--ink-soft); margin:0 0 12px; }
+    /* Jerarquía: nombre y número */
+    .kpi-name{ font-size:42px; font-weight:900; line-height:1.05; color:var(--ink-strong); margin:0 0 8px; }
+    .kpi-number{ font-size:34px; font-weight:800; line-height:1.05; color:#101827; margin:0; letter-spacing:.3px; }
+
     .kpi-card::after{
       content:"↗";
       position:absolute; top:14px; right:14px;
@@ -109,7 +103,8 @@
       box-shadow: 0 18px 40px rgba(78,0,150,.25);
     }
     .kpi-card:hover .kpi-head,
-    .kpi-card:hover .kpi-val{ color:#fff; }
+    .kpi-card:hover .kpi-name,
+    .kpi-card:hover .kpi-number{ color:#fff; }
     .kpi-card:hover::after{
       color:#fff; background: rgba(255,255,255,.12); border-color:transparent;
     }
@@ -118,12 +113,14 @@
     @media(max-width:900px){
       .col-7,.col-5{grid-column:span 12}
       .kpi-card{ grid-column: span 6; }
-      .kpi-val{font-size:34px}
+      .kpi-name{font-size:36px}
+      .kpi-number{font-size:30px}
     }
     @media(max-width:640px){
       .container{padding:20px}
       .kpi-card{ grid-column: span 12; }
-      .kpi-val{font-size:30px}
+      .kpi-name{font-size:32px}
+      .kpi-number{font-size:28px}
     }
   </style>
 </head>
@@ -140,7 +137,6 @@
         </h1>
 
         <div class="landing-visual">
-          <!-- Ajusta la ruta si tu imagen está en otra carpeta -->
           <img src="portadasolera.png" alt="Portada Solera">
         </div>
 
@@ -181,27 +177,31 @@
     </nav>
 
     <div class="container">
-      <!-- Fila 1: KPIs con hover morado -->
+      <!-- Fila 1: KPIs con jerarquía y hover morado -->
       <div class="kpi-row">
         <div class="kpi-card">
           <p class="kpi-head">Estado con mayor No. de Valuaciones</p>
-          <p class="kpi-val" id="kpi_estado_val">—</p>
+          <p class="kpi-name" id="kpi_estado_val_name">—</p>
+          <p class="kpi-number" id="kpi_estado_val_num">—</p>
         </div>
         <div class="kpi-card">
           <p class="kpi-head">Fabricante con mayor No. de Valuaciones</p>
-          <p class="kpi-val" id="kpi_fab_val">—</p>
+          <p class="kpi-name" id="kpi_fab_val_name">—</p>
+          <p class="kpi-number" id="kpi_fab_val_num">—</p>
         </div>
         <div class="kpi-card">
           <p class="kpi-head">Estado con mayor Piezas Sustituidas</p>
-          <p class="kpi-val" id="kpi_estado_pzs">—</p>
+          <p class="kpi-name" id="kpi_estado_pzs_name">—</p>
+          <p class="kpi-number" id="kpi_estado_pzs_num">—</p>
         </div>
         <div class="kpi-card">
           <p class="kpi-head">Fabricante con mayor Piezas Sustituidas</p>
-          <p class="kpi-val" id="kpi_fab_pzs">—</p>
+          <p class="kpi-name" id="kpi_fab_pzs_name">—</p>
+          <p class="kpi-number" id="kpi_fab_pzs_num">—</p>
         </div>
       </div>
 
-      <!-- Fila 2: Mapa + panel derecho -->
+      <!-- Fila 2: Mapa + panel derecho (placeholders) -->
       <div class="grid-12" style="margin-top:16px">
         <div class="card2 col-7">
           <div class="card-pad"><div class="title">Detalle por estado (mapa)</div></div>
@@ -263,6 +263,12 @@
       }else if(s.includes(',') && !s.includes('.')){ s=s.replace(/\./g,'').replace(',', '.'); }
       const v=Number(s); return Number.isFinite(v)?v:null;
     }
+
+    function setKPI(nameSel, numSel, name, num){
+      document.getElementById(nameSel).textContent = name ?? '—';
+      document.getElementById(numSel).textContent  = num  ?? '—';
+    }
+
     function loadKPIs(){
       return new Promise((resolve,reject)=>{
         Papa.parse(SHEET_URL_CSV,{
@@ -275,6 +281,7 @@
                 r["Piezas Sustituidas"]=parseNumLocale(r["Piezas Sustituidas"]);
                 r["Costo Medio Pieza"]=parseNumLocale(r["Costo Medio Pieza"]);
               });
+
               const aggE=new Map(), aggF=new Map();
               for(const r of rows){
                 const e=String(r.Estado||'').trim();
@@ -287,15 +294,19 @@
               }
               const est=[...aggE.values()], fab=[...aggF.values()];
               const top=(a,k)=>a.reduce((x,y)=>y[k]>(x?.[k]??-Infinity)?y:x,null);
+
               const topEV=top(est,'No_Valuaciones'),
                     topEP=top(est,'Piezas_Sustituidas'),
                     topFV=top(fab,'No_Valuaciones'),
                     topFP=top(fab,'Piezas_Sustituidas');
+
               const fmt=x=>x==null?'—':Number(Math.round(x)).toLocaleString('es-MX');
-              document.getElementById('kpi_estado_val').textContent = topEV ? `${topEV.Estado} · ${fmt(topEV.No_Valuaciones)}` : '—';
-              document.getElementById('kpi_fab_val').textContent    = topFV ? `${topFV.Fabricante} · ${fmt(topFV.No_Valuaciones)}` : '—';
-              document.getElementById('kpi_estado_pzs').textContent = topEP ? `${topEP.Estado} · ${fmt(topEP.Piezas_Sustituidas)}` : '—';
-              document.getElementById('kpi_fab_pzs').textContent    = topFP ? `${topFP.Fabricante} · ${fmt(topFP.Piezas_Sustituidas)}` : '—';
+
+              setKPI('kpi_estado_val_name','kpi_estado_val_num', topEV?.Estado, fmt(topEV?.No_Valuaciones));
+              setKPI('kpi_fab_val_name','kpi_fab_val_num',       topFV?.Fabricante, fmt(topFV?.No_Valuaciones));
+              setKPI('kpi_estado_pzs_name','kpi_estado_pzs_num', topEP?.Estado, fmt(topEP?.Piezas_Sustituidas));
+              setKPI('kpi_fab_pzs_name','kpi_fab_pzs_num',       topFP?.Fabricante, fmt(topFP?.Piezas_Sustituidas));
+
               resolve();
             }catch(e){ reject(e); }
           },
@@ -325,25 +336,6 @@
     document.addEventListener('DOMContentLoaded',()=>{
       if(document.getElementById('screen-dashboard').classList.contains('active')) startAuto();
     });
-
-    // Navegación inicial por si entras directo
-    function go(where){
-      const ids=['cover','login','dashboard'];
-      ids.forEach(id=>document.getElementById('screen-'+id).classList.remove('active'));
-      document.getElementById('screen-'+where).classList.add('active');
-      window.scrollTo({top:0,behavior:'instant'});
-      if(where==='dashboard'){ startAuto(); } else { stopAuto(); }
-    }
-    function doLogin(e){
-      e.preventDefault();
-      const u=document.getElementById('user').value.trim();
-      const p=document.getElementById('pass').value.trim();
-      const err=document.getElementById('err');
-      if(u==='admin' && p==='1234'){ go('dashboard'); }
-      else{ err.style.display='block'; setTimeout(()=>err.style.display='none',3000); }
-      return false;
-    }
-    function logout(){ go('cover'); document.getElementById('user').value=''; document.getElementById('pass').value=''; }
   </script>
 </body>
 </html>
